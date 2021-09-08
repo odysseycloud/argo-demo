@@ -30,7 +30,7 @@ jobs:
       HELMFILE_VERSION: 0.140.0
       KUBECTL_VERSION: 1.19.9
       CLIENT_ENVIRONMENT: demo
-      CLIENT_CODE: oc
+      CLIENT_CODE: ${{ secrets.CLIENT_CODE }}
       CLIENT_DOMAIN_URL: ${{ secrets.CLIENT_DOMAIN_URL }}
       CLOUD_PROVIDER: gke
       ARGOCD_CLI_VERSION: v2.0.4
@@ -96,7 +96,7 @@ jobs:
         echo "\n"
         find "resources/" -name "*.tmpl" -exec bash -c 'envsubst < $1 > ${1%.tmpl}' _ {} \;
         kubectl apply -f resources/before --recursive
-        find "helmfile.d/" -name "*.tmpl" -exec bash -c 'envsubst < $1 > ${1%.tmpl}' _ {} \;
+        find "kube-infra/" -name "*.tmpl" -exec bash -c 'envsubst < $1 > ${1%.tmpl}' _ {} \;
         echo $CLIENT_ENVIRONMENT
         ls -lrt
         ./helmfile --environment $CLIENT_ENVIRONMENT sync 
