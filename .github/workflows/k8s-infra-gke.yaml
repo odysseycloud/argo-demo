@@ -60,6 +60,7 @@ jobs:
         cluster_name: ${{ env.K8S_CLUSTER }}
         location: ${{ env.CLOUD_LOCATION_1 }}
         credentials: ${{ secrets.GKE_SA_KEY }}
+        project_id: ${{ env.CLIENT_ACCOUNT_ID }}
 
     # Install Helm3
     - name: Install Helm3
