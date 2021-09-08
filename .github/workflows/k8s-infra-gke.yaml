@@ -51,6 +51,8 @@ jobs:
     # helper for authentication
     - run: |-
         gcloud --quiet auth configure-docker
+        echo ${{ env.K8S_CLUSTER }}
+        echo ${{ env.CLOUD_LOCATION_1 }}
 
     # Get the GKE credentials so we can deploy to the cluster
     - uses: google-github-actions/get-gke-credentials@v0.2.1
