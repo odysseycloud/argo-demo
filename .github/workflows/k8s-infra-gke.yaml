@@ -115,7 +115,7 @@ jobs:
         chmod a+x argocd 
         echo $CLIENT_DOMAIN_URL
         echo ${{ env.CLIENT_DOMAIN_URL }}
-        ./argocd login argocd-demo.$CLIENT_DOMAIN_URL --username ${{ secrets.ARGOCD_USERNAME }} --password $( kubectl get secrets argocd-initial-admin-secret -o json -n argo | jq -r '(.data.password)' | base64 --decode )
+        ./argocd login argocd-demo.${{ env.CLIENT_DOMAIN_URL }} --username ${{ secrets.ARGOCD_USERNAME }} --password $( kubectl get secrets argocd-initial-admin-secret -o json -n argo | jq -r '(.data.password)' | base64 --decode )
         ./argocd cluster add $( kubectl config view -o json | jq -r '(.clusters[].name)' ) --name $CLIENT_CODE-$CLOUD_PROVIDER-$CLIENT_ENVIRONMENT 
         kubectl apply -f kube-infra/kube-infra-applicationSet.yaml
       #  kubectl apply -f kube-infra/app-infra-applicationSet.yaml
