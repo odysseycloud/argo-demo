@@ -1,2 +1,5 @@
 .vscode
 .idea/*
+resources/after/demo/sealed-secrets/aws.yaml
+resources/after/demo/sealed-secrets/github.yaml
+.gitignore
