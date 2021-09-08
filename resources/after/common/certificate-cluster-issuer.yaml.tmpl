@@ -1,0 +1,77 @@
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-$CLIENT_ENVIRONMENT-aws
+  namespace: kube-infra
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: admin@odysseycloud.io
+    privateKeySecretRef:
+      name: letsencrypt-$CLIENT_ENVIRONMENT-aws
+    solvers:
+    - dns01:
+        route53:
+          region: ap-southeast-2
+          accessKeyID: $AWS_ACCESS_KEY
+          secretAccessKeySecretRef: 
+            name: aws-dns-creds
+            key: AWS_SECRET_ACCESS_KEY
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging-certs-aws
+  namespace: kube-infra
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: admin@odysseycloud.io
+    privateKeySecretRef:
+      name: letsencrypt-$CLIENT_ENVIRONMENT-aws
+    solvers:
+    - dns01:
+        route53:
+          region: ap-southeast-2
+          accessKeyID: $AWS_ACCESS_KEY
+          secretAccessKeySecretRef: 
+            name: aws-dns-creds
+            key: AWS_SECRET_ACCESS_KEY
+---        
+# apiVersion: cert-manager.io/v1alpha2
+# kind: ClusterIssuer
+# metadata:
+#   name: letsencrypt-$CLIENT_ENVIRONMENT-gcp
+# spec:
+#   acme:
+#     server: https://acme-staging-v02.api.letsencrypt.org/directory
+#     email: admin@odysseycloud.io
+#     privateKeySecretRef:
+#       name: letsencrypt-$CLIENT_ENVIRONMENT-gcp
+#     solvers:
+#     - dns01:
+#         cloudDNS:
+#           project: $PROJECT
+#           serviceAccountSecretRef:
+#             name: gcp-dns-creds
+#             key: credetial.json
+# ___            
+# apiVersion: cert-manager.io/v1alpha2
+# kind: ClusterIssuer
+# metadata:
+#   name: letsencrypt-$CLIENT_ENVIRONMENT-cloudflare
+# spec:
+#   acme:
+#     server: https://acme-staging-v02.api.letsencrypt.org/directory
+#     email: admin@odysseycloud.io
+#     privateKeySecretRef:
+#       name: letsencrypt-$CLIENT_ENVIRONMENT-cloudflare
+#     solvers:
+#     - dns01:
+#         cloudflare:
+#           email: $CLOUDFLARE_EMAIL
+#           apiKeySecretRef:
+#             name: cloudflare-dns-creds
+#             key: cloudflare_api
+---            

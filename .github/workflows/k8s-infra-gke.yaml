@@ -1,0 +1,121 @@
+# This workflow will build a docker container, publish it to Google Container Registry, and deploy it to GKE when a release is created
+#
+# To configure this workflow:
+#
+# 1. Ensure that your repository contains the necessary configuration for your Google Kubernetes Engine cluster, including deployment.yml, kustomization.yml, service.yml, etc.
+#
+# 2. Set up secrets in your workspace: GKE_PROJECT with the name of the project and GKE_SA_KEY with the Base64 encoded JSON service account key (https://github.com/GoogleCloudPlatform/github-actions/tree/docs/service-account-key/setup-gcloud#inputs).
+#
+# 3. Change the values for the CLOUD_LOCATION_1, K8S_CLUSTER, IMAGE, and DEPLOYMENT_NAME environment variables (below).
+#
+# For more support on how to run the workflow, please visit https://github.com/google-github-actions/setup-gcloud/tree/master/example-workflows/gke
+
+name: Build and Deploy to GKE
+
+on: 
+  push:
+    branches:
+      - master
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+    environment: $CLIENT_ENVIRONMENT
+    env:
+      CLIENT_ACCOUNT_ID: ${{ secrets.CLIENT_ACCOUNT_ID }}
+      K8S_CLUSTER: ${{ secrets.K8S_CLUSTER }}
+      CLOUD_LOCATION_1: us-west1   # TODO: update to cluster zone
+      HELM_VERSION: 3.6.3
+      HELMFILE_VERSION: 0.140.0
+      KUBECTL_VERSION: 1.19.9
+      CLIENT_ENVIRONMENT: demo
+      CLIENT_CODE: ${{ secrets.CLIENT_CODE }}
+      CLIENT_DOMAIN_URL: ${{ secrets.CLIENT_DOMAIN_URL }}
+      CLOUD_PROVIDER: gke
+      ARGOCD_CLI_VERSION: v2.0.4
+      ARGO_DESTINATION_CLUSTER_SERVER: ${{ secrets.ARGO_DESTINATION_CLUSTER_SERVER }}
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # Setup gcloud CLI
+    - uses: google-github-actions/setup-gcloud@v0.2.0
+      with:
+        service_account_key: ${{ secrets.GKE_SA_KEY }}
+        project_id: ${{ env.CLIENT_ACCOUNT_ID }}
+
+    # Configure Docker to use the gcloud command-line tool as a credential
+    # helper for authentication
+    - run: |-
+        gcloud --quiet auth configure-docker
+
+    # Get the GKE credentials so we can deploy to the cluster
+    - uses: google-github-actions/get-gke-credentials@v0.2.1
+      with:
+        cluster_name: ${{ env.K8S_CLUSTER }}
+        location: ${{ env.CLOUD_LOCATION_1 }}
+        credentials: ${{ secrets.GKE_SA_KEY }}
+
+    # Install Helm3
+    - name: Install Helm3
+      uses: azure/setup-helm@v1
+      with:
+        version: v3.6.1
+
+    # Set up Helm3
+    - name: Set up Helm3
+      run: |-
+        helm repo add incubator https://charts.helm.sh/incubator
+        helm repo add stable https://charts.helm.sh/stable
+        helm plugin install https://github.com/jkroepke/helm-secrets --version ${HELM_SECRETS_VERSION}        
+
+    # Set up Helmfile
+    - name: Set up Helmfile
+      run: |-
+        curl -sfLo helmfile https://github.com/roboll/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_linux_amd64
+        chmod a+x ./helmfile
+
+    # Set up Kubectl
+    - name: Set up Kubectl
+      run: |-
+        curl -sfLo kubectl "https://dl.k8s.io/release/v1.19.9/bin/linux/amd64/kubectl"
+        chmod a+x ./kubectl               
+
+    # Deploy the Docker image to the GKE cluster
+    - name: Deploy
+      run: |-
+        ARGO_DESTINATION_CLUSTER_SERVER="$( kubectl config view -o json | jq -r '(.clusters[].cluster.server)' )"
+        echo "ARGO_DESTINATION_CLUSTER_SERVER"
+        echo $ARGO_DESTINATION_CLUSTER_SERVER
+        echo $AWS_ACCESS_KEY
+        echo "\n"
+        find "resources/" -name "*.tmpl" -exec bash -c 'envsubst < $1 > ${1%.tmpl}' _ {} \;
+        kubectl apply -f resources/before --recursive
+        find "helmfile.d/" -name "*.tmpl" -exec bash -c 'envsubst < $1 > ${1%.tmpl}' _ {} \;
+        echo $CLIENT_ENVIRONMENT
+        ls -lrt
+        ./helmfile --environment $CLIENT_ENVIRONMENT sync 
+        
+        cat resources/after/common/certificate-cluster-issuer.yaml
+        kubectl apply -f resources/after/common --recursive
+        kubectl apply -f resources/after/$CLIENT_ENVIRONMENT --recursive
+        CLUSTER_SERVER = kubectl config view -o json | jq '(.clusters[].cluster.name)'
+        kubectl get ing/argo-cd-argocd-server -n argo -o json \
+        | jq '(.spec.rules[].http.paths[].pathType | select(. == "Prefix")) |= "ImplementationSpecific"' \
+        | kubectl apply -f -        
+
+    - name: Set up argocd CLI
+      run: |-
+        curl -sfLo argocd "https://github.com/argoproj/argo-cd/releases/download/$ARGOCD_CLI_VERSION/argocd-linux-amd64"
+        chmod a+x argocd 
+        ./argocd login argocd.$CLIENT_DOMAIN_URL --username ${{ secrets.ARGOCD_USERNAME }} --password $( kubectl get secrets argocd-initial-admin-secret -o json -n argo | jq -r '(.data.password)' | base64 --decode )
+        ./argocd cluster add $( kubectl config view -o json | jq -r '(.clusters[].name)' ) --name $CLIENT_CODE-$CLOUD_PROVIDER-$CLIENT_ENVIRONMENT 
+        kubectl apply -f kube-infra/kube-infra-applicationSet.yaml
+      #  kubectl apply -f kube-infra/app-infra-applicationSet.yaml
+      
+
+
+

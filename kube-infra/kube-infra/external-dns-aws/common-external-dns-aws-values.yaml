@@ -1,0 +1,4 @@
+policy: sync
+rbac: 
+  create: true
+registry: txt
