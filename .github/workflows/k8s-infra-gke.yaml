@@ -30,7 +30,7 @@ jobs:
       HELMFILE_VERSION: 0.140.0
       KUBECTL_VERSION: 1.19.9
       CLIENT_ENVIRONMENT: demo
-      CLIENT_CODE: ${{ secrets.CLIENT_CODE }}
+      CLIENT_CODE: oc
       CLIENT_DOMAIN_URL: ${{ secrets.CLIENT_DOMAIN_URL }}
       CLOUD_PROVIDER: gke
       ARGOCD_CLI_VERSION: v2.0.4
