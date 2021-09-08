@@ -1,0 +1,86 @@
+server:
+
+  extraArgs:
+  - --insecure
+
+  ingress: 
+    enabled: true
+    https: false
+    # ingressClassName: "gce"
+    annotations: 
+      kubernetes.io/ingress.class: gce
+      # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      # nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      # kubernetes.io/tls-acme: "true"
+      #external-dns.alpha.kubernetes.io/hostname: argocd.$CLIENT_DOMAIN_URL
+      cert-manager.io/cluster-issuer: letsencrypt-$CLIENT_DOMAIN_URL-aws
+    hosts:
+      - argocd-demo.$CLIENT_DOMAIN_URL
+    tls:
+      - hosts:
+          - argocd-demo.$CLIENT_DOMAIN_URL
+        secretName: letsencrypt-$CLIENT_CODE-demo-argo-cd
+
+  rbacConfig:
+    policy.default: role:readonly
+    policy.csv: |
+      g, brad@odysseycloud.io, role:admin
+      g, amit@odysseycloud.io, role:admin
+    scopes: '[email,group]'
+
+  configs:
+  #   url: https://argocd-demo.$CLIENT_DOMAIN_URL
+
+    # dex.config: | 
+    #   connectors:
+    #     - type: saml
+    #       id: saml
+    #       name: saml
+    #       config:
+    #         ssoURL: https://accounts.google.com/o/saml2/idp?idpid=xxxxxx
+    #         entityIssuer: https://argocd-demo.$CLIENT_DOMAIN_URL/api/dex/callback
+    #         caData: |
+    #           xxxxxx
+    #         redirectURI: https://argocd-demo.$CLIENT_DOMAIN_URL/api/dex/callback
+    #         usernameAttr: name
+    #         emailAttr: email
+    #         # optional
+    #         ssoIssuer: https://accounts.google.com/o/saml2?idpid=xxxxx
+
+  credentialTemplates: 
+    # github-enterprise-creds-1:
+    #   url: https://github.com/odysseycloud
+    #   githubAppID: 1
+    #   githubAppInstallationID: 2
+    #   githubAppEnterpriseBaseUrl: https://ghe.example.com/api/v3
+    #   githubAppPrivateKey: |
+    #     -----BEGIN OPENSSH PRIVATE KEY-----
+    #     ...
+    #     -----END OPENSSH PRIVATE KEY-----
+    https-creds:
+      url: https://github.com/odysseycloud
+      username: my-username
+      password: my-password
+    # ssh-creds:
+    #  url: git@github.com:argoproj-labs
+    #  sshPrivateKey: |
+    #    -----BEGIN OPENSSH PRIVATE KEY-----
+    #    ...
+    #    -----END OPENSSH PRIVATE KEY-----
+    repositories: |
+      - url: git@github.com:odysseycloud/argo-demo.git
+        sshPrivateKeySecret:
+          name: aws-dns-creds
+          key: SSH_PRIVATE_KEY
+    
+    clusterCredentials: |
+      - name: $CLIENT_CODE-$CLOUD_PROVIDER-$CLIENT_ENVIRONMENT
+        server: $CLUSTER_SERVER
+        # labels: {}
+        # annotations: {}
+        config:
+          # bearerToken: "<authentication token>"
+          tlsClientConfig:
+            insecure: false
+            caData: $CLUSTER_CA_DATA
+   
