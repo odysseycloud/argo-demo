@@ -32,7 +32,7 @@ server:
   #     g, amit@odysseycloud.io, role:admin
   #   scopes: '[email,group]'
 
-  configs:
+  # configs:
   #   url: https://argocd-demo.$CLIENT_DOMAIN_URL
 
     # dex.config: | 
@@ -51,7 +51,7 @@ server:
     #         # optional
     #         ssoIssuer: https://accounts.google.com/o/saml2?idpid=xxxxx
 
-  credentialTemplates: 
+  # credentialTemplates: 
     # github-enterprise-creds-1:
     #   url: https://github.com/odysseycloud
     #   githubAppID: 1
@@ -61,10 +61,10 @@ server:
     #     -----BEGIN OPENSSH PRIVATE KEY-----
     #     ...
     #     -----END OPENSSH PRIVATE KEY-----
-    https-creds:
-      url: https://github.com/odysseycloud
-      username: my-username
-      password: my-password
+    # https-creds:
+    #   url: https://github.com/odysseycloud
+    #   username: my-username
+    #   password: my-password
     # ssh-creds:
     #  url: git@github.com:argoproj-labs
     #  sshPrivateKey: |
