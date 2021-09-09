@@ -97,7 +97,7 @@ jobs:
         find "resources/" -name "*.tmpl" -exec bash -c 'envsubst < $1 > ${1%.tmpl}' _ {} \;
         kubectl apply -f resources/before --recursive
         find "helmfile.d/" -name "*.tmpl" -exec bash -c 'envsubst < $1 > ${1%.tmpl}' _ {} \;
-        find "kube-infra/" -name "*.tmpl" -exec bash -c 'envsubst < $1 > ${1%.tmpl}' _ {} \;
+        find "k8s-infra/" -name "*.tmpl" -exec bash -c 'envsubst < $1 > ${1%.tmpl}' _ {} \;
         echo $CLIENT_ENVIRONMENT
         ls -lrt
         ./helmfile --environment $CLIENT_ENVIRONMENT sync 
@@ -118,8 +118,8 @@ jobs:
         echo ${{ env.CLIENT_DOMAIN_URL }}
         ./argocd login argocd-demo.${{ env.CLIENT_DOMAIN_URL }} --username ${{ secrets.ARGOCD_USERNAME }} --password $( kubectl get secrets argocd-initial-admin-secret -o json -n argo | jq -r '(.data.password)' | base64 --decode )
         ./argocd cluster add $( kubectl config view -o json | jq -r '(.clusters[].name)' ) --name $CLIENT_CODE-$CLOUD_PROVIDER-$CLIENT_ENVIRONMENT 
-        kubectl apply -f kube-infra/kube-infra-applicationSet.yaml
-      #  kubectl apply -f kube-infra/app-infra-applicationSet.yaml
+        kubectl apply -f k8s-infra/k8s-infra-applicationSet.yaml
+      #  kubectl apply -f k8s-infra/app-infra-applicationSet.yaml
       
 
 
