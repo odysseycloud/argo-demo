@@ -21,7 +21,7 @@ releases:
   - name: argo-cd
     namespace: argo
     chart: argo/argo-cd
-    version: 3.13.1
+    version: 3.17.5
     condition: argo-cd.enabled
     values:
       - values/{{ requiredEnv "CLIENT_ENVIRONMENT" }}/argo-cd.yaml

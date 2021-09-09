@@ -3,12 +3,12 @@ server:
   service:
     type: NodePort
 
-  # extraArgs:
-  # - --insecure
+  extraArgs:
+  - --insecure
 
   ingress: 
     enabled: true
-    # https: false
+    https: false
     # ingressClassName: "gce"
     annotations: 
       kubernetes.io/ingress.class: gce
