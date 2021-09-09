@@ -23,7 +23,7 @@ spec:
       - list:
           elements:
           - cluster: demo
-            clusterUrl: 
+            clusterUrl: https://34.82.123.171
             values:
               CLIENT_ENVIRONMENT: demo             
   template:

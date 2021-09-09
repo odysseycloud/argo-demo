@@ -8,7 +8,7 @@ spec:
   - matrix:
       generators:
       - git:
-          repoURL: git@github.com:odysseycloud/kubernetes.git
+          repoURL: https://github.com/odysseycloud/argo-demo.git
           revision: HEAD
           directories:
           - path: k8s-infra/argo/*
@@ -19,7 +19,7 @@ spec:
       - list:
           elements:
           - cluster: demo
-            url: https://34.105.124.251
+            url: https://34.82.123.171
             values:
               CLIENT_ENVIRONMENT: demo             
   template:
@@ -28,7 +28,7 @@ spec:
     spec:
       project: odysseycloud
       source:
-        repoURL: git@github.com:odysseycloud/kubernetes.git
+        repoURL: https://github.com/odysseycloud/argo-demo.git
         targetRevision: HEAD
         path: '{{path}}'
         helm:
