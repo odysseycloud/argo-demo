@@ -25,7 +25,7 @@ jobs:
     env:
       CLIENT_ACCOUNT_ID: ${{ secrets.CLIENT_ACCOUNT_ID }}
       K8S_CLUSTER: ${{ secrets.K8S_CLUSTER }}
-      CLOUD_LOCATION_1: us-west1-a   # TODO: update to cluster zone
+      CLOUD_LOCATION_1: us-west1   # TODO: update to cluster zone
       HELM_VERSION: 3.6.3
       HELMFILE_VERSION: 0.140.0
       KUBECTL_VERSION: 1.19.9
