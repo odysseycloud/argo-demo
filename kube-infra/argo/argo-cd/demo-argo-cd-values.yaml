@@ -6,7 +6,8 @@ server:
   ingress: 
     enabled: true
     https: false
-    # ingressClassName: "gce"
+    # ingres:sClassName: "gce"
+    pathType: ImplementationSpecific
     annotations: 
       kubernetes.io/ingress.class: gce
       # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
