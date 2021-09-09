@@ -67,11 +67,7 @@ server:
     #    -----BEGIN OPENSSH PRIVATE KEY-----
     #    ...
     #    -----END OPENSSH PRIVATE KEY-----
-    repositories: |
-      - url: git@github.com:odysseycloud/argo-demo.git
-        sshPrivateKeySecret:
-          name: aws-dns-creds
-          key: SSH_PRIVATE_KEY
+
     
     clusterCredentials: |
       - name: $CLIENT_CODE-$CLOUD_PROVIDER-$CLIENT_ENVIRONMENT
