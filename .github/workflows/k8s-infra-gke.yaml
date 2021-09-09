@@ -96,6 +96,7 @@ jobs:
         echo "\n"
         find "resources/" -name "*.tmpl" -exec bash -c 'envsubst < $1 > ${1%.tmpl}' _ {} \;
         kubectl apply -f resources/before --recursive
+        find "helmfile.d/" -name "*.tmpl" -exec bash -c 'envsubst < $1 > ${1%.tmpl}' _ {} \;
         find "kube-infra/" -name "*.tmpl" -exec bash -c 'envsubst < $1 > ${1%.tmpl}' _ {} \;
         echo $CLIENT_ENVIRONMENT
         ls -lrt
