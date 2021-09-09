@@ -104,10 +104,10 @@ jobs:
         cat resources/after/common/certificate-cluster-issuer.yaml
         kubectl apply -f resources/after/common --recursive
         kubectl apply -f resources/after/$CLIENT_ENVIRONMENT --recursive
-        export CLUSTER_SERVER = "kubectl config view -o json | jq '(.clusters[].cluster.name)'
+        export CLUSTER_SERVER = kubectl config view -o json | jq '(.clusters[].cluster.name)'
         kubectl get ing/argo-cd-argocd-server -n argo -o json \
         | jq '(.spec.rules[].http.paths[].pathType | select(. == "Prefix")) |= "ImplementationSpecific"' \
-        | kubectl apply -f - "   
+        | kubectl apply -f -   
 
     - name: Set up argocd CLI
       run: |-
