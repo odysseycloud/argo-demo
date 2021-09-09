@@ -11,11 +11,11 @@ spec:
           repoURL: git@github.com:odysseycloud/kubernetes.git
           revision: HEAD
           directories:
-          - path: kube-infra/argo/*
+          - path: k8s-infra/argo/*
           - exclude: true
-            path: kube-infra/argo/argo-workflows
-          - path: kube-infra/kube-infra/*
-          - path: kube-infra/security/*
+            path: k8s-infra/argo/argo-workflows
+          - path: k8s-infra/dns-infra/*
+          - path: k8s-infra/security/*
       - list:
           elements:
           - cluster: demo

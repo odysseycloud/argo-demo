@@ -21,7 +21,7 @@ releases:
   - name: argo-cd
     namespace: argo
     chart: argo/argo-cd
-    version: 3.17.5
+    version: 3.13.1
     condition: argo-cd.enabled
     values:
       - values/{{ requiredEnv "CLIENT_ENVIRONMENT" }}/argo-cd.yaml
@@ -32,7 +32,7 @@ releases:
     version: 1.4.0
     condition: argo-cd.enabled 
     values:
-      - ../kube-infra/argo/argocd-applicationset/{{ requiredEnv "CLIENT_ENVIRONMENT" }}-argocd-applicationset-values.yaml
+      - ../k8s-infra/argo/argocd-applicationset/{{ requiredEnv "CLIENT_ENVIRONMENT" }}-argocd-applicationset-values.yaml
     # hooks:
     #   - events: ["prepare"]
     #     command: "kubectl"
@@ -41,17 +41,17 @@ releases:
 
 
   - name: cert-manager
-    namespace: kube-infra
+    namespace: dns-infra
     chart: jetstack/cert-manager
     version: 1.4.0
     values:
-      - ../kube-infra/kube-infra/cert-manager/{{ requiredEnv "CLIENT_ENVIRONMENT" }}-cert-manager-values.yaml
+      - ../k8s-infra/dns-infra/cert-manager/{{ requiredEnv "CLIENT_ENVIRONMENT" }}-cert-manager-values.yaml
 
 
   - name: external-dns-aws
-    namespace: kube-infra
+    namespace: dns-infra
     chart: bitnami/external-dns
     version: 5.4.5
     values:
-      - ../kube-infra/kube-infra/external-dns-aws/common-external-dns-aws-values.yaml
-      - ../kube-infra/kube-infra/external-dns-aws/{{ requiredEnv "CLIENT_ENVIRONMENT" }}-external-dns-aws-values.yaml       
+      - ../k8s-infra/dns-infra/external-dns-aws/common-external-dns-aws-values.yaml
+      - ../k8s-infra/dns-infra/external-dns-aws/{{ requiredEnv "CLIENT_ENVIRONMENT" }}-external-dns-aws-values.yaml       

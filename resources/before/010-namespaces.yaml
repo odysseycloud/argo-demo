@@ -12,5 +12,5 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: kube-infra
+  name: dns-infra
 ---
