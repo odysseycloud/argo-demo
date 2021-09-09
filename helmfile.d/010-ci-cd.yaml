@@ -21,15 +21,15 @@ releases:
   - name: argo-cd
     namespace: argo
     chart: argo/argo-cd
-    version: 3.13.1
+    version: 3.17.5
     condition: argo-cd.enabled
     values:
-      - ../kube-infra/argo/argo-cd/{{ requiredEnv "CLIENT_ENVIRONMENT" }}-argo-cd-values.yaml
+      - values/{{ requiredEnv "CLIENT_ENVIRONMENT" }}/argo-cd.yaml
 
   - name: argocd-applicationset
     namespace: argo
     chart: argo/argocd-applicationset
-    version: 1.3.0
+    version: 1.4.0
     condition: argo-cd.enabled 
     values:
       - ../kube-infra/argo/argocd-applicationset/{{ requiredEnv "CLIENT_ENVIRONMENT" }}-argocd-applicationset-values.yaml
