@@ -11,5 +11,5 @@ extraEnv:
       key: AWS_SECRET_ACCESS_KEY
 provider: aws
 domainFilters:
-- bradmccoy.io
+- amitdsouza.io
 txtOwnderId: external-dns.odysseycloud.io
