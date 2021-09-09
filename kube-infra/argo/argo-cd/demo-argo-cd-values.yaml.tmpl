@@ -1,5 +1,8 @@
 server:
 
+  service:
+    type: NodePort
+    
   extraArgs:
   - --insecure
 
@@ -7,6 +10,7 @@ server:
     enabled: true
     https: false
     # ingressClassName: "gce"
+    pathType: ImplementationSpecific    
     annotations: 
       kubernetes.io/ingress.class: gce
       # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
