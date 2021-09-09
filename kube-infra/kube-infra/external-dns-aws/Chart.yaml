@@ -3,13 +3,13 @@ name: external-dns-aws
 namespace: kube-infra
 description: external-dns-aws Helm chart for Kubernetes
 type: application
-version: 5.1.3
-appVersion: "0.8.0"
+version: 5.4.5
+appVersion: "0.9.0"
 
 dependencies:
 - name: external-dns
   chart: bitnami/external-dns
-  version: 5.1.3
+  version: 5.4.5
   repository: https://charts.bitnami.com/bitnami
   values:
     - ../common-external-dns-values.yaml
