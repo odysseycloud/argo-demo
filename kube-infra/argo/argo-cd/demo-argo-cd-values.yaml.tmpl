@@ -2,7 +2,7 @@ server:
 
   service:
     type: NodePort
-    
+
   extraArgs:
   - --insecure
 
@@ -25,12 +25,12 @@ server:
           - argocd-demo.$CLIENT_DOMAIN_URL
         secretName: letsencrypt-$CLIENT_CODE-demo-argo-cd
 
-  rbacConfig:
-    policy.default: role:readonly
-    policy.csv: |
-      g, brad@odysseycloud.io, role:admin
-      g, amit@odysseycloud.io, role:admin
-    scopes: '[email,group]'
+  # rbacConfig:
+  #   policy.default: role:readonly
+  #   policy.csv: |
+  #     g, brad@odysseycloud.io, role:admin
+  #     g, amit@odysseycloud.io, role:admin
+  #   scopes: '[email,group]'
 
   configs:
   #   url: https://argocd-demo.$CLIENT_DOMAIN_URL
